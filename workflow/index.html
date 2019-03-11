@@ -1,1 +1,104 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><link rel="manifest" href="./manifest.json"><link rel="shortcut icon" href="./favicon.ico"><title>Workflow Designer</title><link href="./static/css/main.65027555.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script type="text/javascript" src="./static/js/main.5a35782b.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="./favicon.ico">
+  <title>Workflow Designer</title>
+  <style>
+    .lds-hourglass {
+      display: inline-block;
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+
+    .lds-hourglass:after {
+      content: " ";
+      display: block;
+      border-radius: 50%;
+      width: 0;
+      height: 0;
+      margin: 6px;
+      box-sizing: border-box;
+      border: 26px solid #fff;
+      border-color: #fff transparent #fff transparent;
+      animation: lds-hourglass 1.2s infinite;
+    }
+
+    @keyframes lds-hourglass {
+      0% {
+        transform: rotate(0);
+        animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+      }
+
+      50% {
+        transform: rotate(900deg);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
+
+      100% {
+        transform: rotate(1800deg);
+      }
+    }
+
+    .loadingMask {
+      left: 0;
+      top: 0;
+      position: fixed;
+      height: 100vh;
+      width: 100vw;
+      transition: all .2s;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: silver;
+    }
+
+    .loadingMask>.splash {
+      opacity: 0;
+      width: auto;
+    }
+
+    .transparent {
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='loadingMask' id='loadingMask'>
+    <div class='splash'>
+      <div class="lds-hourglass"></div>
+    </div>
+  </div>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"></div>
+
+  <script>
+    (function () {
+      var mask = document.getElementById('loadingMask')
+      function removeSplash() {
+        function remove(div) {
+          if (div) div.parentNode.removeChild(div);
+        }
+        mask.classList.add('transparent')
+        remove(mask.querySelector('div.splash'))
+        setTimeout(function () { remove(mask) }, 200)
+      }
+      window.addEventListener('load', removeSplash)
+      window.requestAnimationFrame(function () {
+        mask.querySelector('.splash').style.opacity = 1
+      })
+    }()) 
+  </script>
+<script type="text/javascript" src="index.js"></script></body>
+
+</html>
