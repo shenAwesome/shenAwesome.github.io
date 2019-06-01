@@ -31,9 +31,9 @@
     }
 
     .thumbnails>img {
-      float: left;
-      width: 100px;
-      height: 100px;
+      width:100px;
+      height:100px;
+      float: left; 
       border: 2px solid black;
       box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 2px 4px 0 rgba(0, 0, 0, .16);
       margin: 10px;
@@ -89,7 +89,7 @@
       add('sawater', 4)
 
       imgs.forEach(function (src) {
-        var img = $('<img/>').attr('src', src).appendTo('.thumbnails')
+        var img = $('<img/>').attr('src', src.replace('.png','_small.png')).appendTo('.thumbnails')
         img.click(function () {
           $('<img/>').attr('src', src).appendTo($('.view').empty())
           img.addClass('selected').siblings().removeClass('selected')
