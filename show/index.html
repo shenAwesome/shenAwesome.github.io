@@ -95,7 +95,19 @@
           img.addClass('selected').siblings().removeClass('selected')
         })
       })
-      $('.thumbnails>img').eq(0).click()
+      $('.thumbnails>img').eq(0).click() 
+      
+      function preload() {
+         var src = imgs.shift()
+         console.log(src)
+         if (src){
+             $('<img/>').attr('src',src).on('load',function(){ 
+                 preload()
+             }) 
+         } 
+      }
+      preload() 
+     
     }) 
   </script>
 </body>

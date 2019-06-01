@@ -13,6 +13,6 @@ for f in matches:
     if not '_small' in f:
         im = Image.open(f)
         #im = im.convert("RGB")
-        im = im.resize((200,200))
+        im = im.resize((200,200),Image.ANTIALIAS)
         im.save(f.replace('.png','_small.png'))
         #os.rename(f,f.replace('.jpg','.png'))
