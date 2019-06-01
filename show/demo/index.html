@@ -1,0 +1,119 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Take a screenshot of a SceneView - 4.11</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.11/"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>
+
+    /*
+    require(["esri/WebScene", "esri/views/SceneView"], function (
+      WebScene,
+      SceneView
+    ) {
+      
+      var scene = new WebScene({
+        portalItem: {
+          id: "3a9976baef9240ab8645ee25c7e9c096"
+        }
+      });
+      var view = new SceneView({ map: scene, container: "viewDiv" });
+    })
+    */
+
+    require(["esri/Map", "esri/views/MapView", "esri/Graphic", "esri/geometry/Point"],
+      function (Map, MapView, Graphic, Point) {
+        var map = new Map({
+          basemap: "streets"
+        })
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 12,
+          center: [144.839745, -37.828436]
+        })
+
+        const iconSymbol = {
+          type: "text", // autocasts as new TextSymbol()
+          color: "#7A003C",
+          text: "\ue61d", // esri-icon-map-pin
+          font: {
+            size: 36,
+            family: "calcite-web-icons"
+          }
+        }
+
+        function createPoint(lonLat) {
+          const pair = lonLat.split(',')
+          return new Point({
+            longitude: parseFloat(pair[1]),
+            latitude: parseFloat(pair[0])
+          })
+        }
+
+        function addMarker(lonLat, text) {
+          const point = createPoint(lonLat)
+          const graphic = new Graphic({
+            geometry: point,
+            symbol: iconSymbol
+          })
+          const label = new Graphic({
+            geometry: point,
+            symbol: {
+              type: "text",
+              color: "#000000",
+              haloColor: "#FFFFFF",
+              haloSize: 2,
+              text: text,
+              yoffset: -20,
+              font: {
+                size: 24
+              }
+            }
+          })
+          view.graphics.add(graphic)
+          view.graphics.add(label)
+        }
+
+        const marks = [
+          ['-37.844569, 144.657606', "Shen's Home"],
+          ['-37.809,144.9712513', 'DELWP'],
+          ['-37.831255,144.9955613', "AAM"]
+        ]
+
+        marks.forEach(function (pair) {
+          addMarker(pair[0], pair[1])
+        })
+
+        setTimeout(() => {
+          view.goTo({
+            target: createPoint(marks[0][0]),
+            zoom: 15
+          }, { duration: 2000 })
+        }, 5000);
+      })
+
+  </script>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewDiv">
+  </div>
+</body>
+
+</html>

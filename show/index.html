@@ -1,0 +1,103 @@
+<html>
+
+<head>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .thumbnails {
+      height: 100vh;
+      width: 50vw;
+    }
+
+    .view {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: 50vw;
+      padding: 10px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .view img {
+      max-width: calc(100% - 10px);
+      max-height: calc(100% - 10px);
+      border: 2px solid black;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 2px 4px 0 rgba(0, 0, 0, .16);
+      border-radius: 5px;
+    }
+
+    .thumbnails>img {
+      float: left;
+      width: 100px;
+      height: 100px;
+      border: 2px solid black;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 2px 4px 0 rgba(0, 0, 0, .16);
+      margin: 10px;
+      border-radius: 5px;
+    }
+
+    .thumbnails>img:active {
+      position: relative;
+      left: 1px;
+      top: 1px;
+    }
+
+    .thumbnails>img:hover {
+      outline: 4px solid cyan;
+      outline-offset: 2px;
+    }
+
+    .thumbnails>img.selected {
+      outline: 4px solid green;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class='thumbnails'></div>
+  <div class='view'></div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script>
+    function range(n) {
+      var array = []
+      for (var i = 0; i <= n; i++) array.push(i)
+      return array
+    }
+
+    var prefix = 'shen_20190601_'
+    $(function () {
+      var imgs = []
+      function add(name, count) {
+        range(count).forEach(function (n) {
+          imgs.push('./' + name + '/' + prefix + n + '.png')
+        })
+      }
+      add('reports', 3)
+      add('', 7)
+      add('nrm', 16)
+      add('origin', 11)
+      add('drover', 6)
+      add('LocWiz', 15)
+      add('sawater', 4)
+
+      imgs.forEach(function (src) {
+        var img = $('<img/>').attr('src', src).appendTo('.thumbnails')
+        img.click(function () {
+          $('<img/>').attr('src', src).appendTo($('.view').empty())
+          img.addClass('selected').siblings().removeClass('selected')
+        })
+      })
+      $('.thumbnails>img').eq(0).click()
+    }) 
+  </script>
+</body>
+
+</html>
