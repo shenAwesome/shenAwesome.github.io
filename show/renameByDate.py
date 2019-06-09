@@ -16,7 +16,7 @@ dirpath = dirpath+str(maxIdx)
 
 
 
-dirpath =  r'C:\Shen\work\screenshots\next\sawater'
+dirpath =  r'C:\Shen\code\github\shenAwesome.github.io\show\moreland'
 
 
 print dirpath
@@ -30,6 +30,9 @@ index = 0
 import datetime 
 now = datetime.datetime.now()
 dateStr = now.strftime("%Y%m%d")
+dateStr = '20190601'
+
+
 for cdate, path in sorted(entries):
     renameTo = os.path.join(dirpath,'shen_'+dateStr+'_'+str(index)+'.png')
     index = index+1

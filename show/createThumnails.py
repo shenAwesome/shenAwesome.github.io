@@ -2,7 +2,7 @@ import fnmatch
 import os
 from PIL import Image
 
-dir = r'C:\Shen\work\screenshots\next'
+dir = r'C:\Shen\code\github\shenAwesome.github.io\show\moreland'
 
 matches = []
 for root, dirnames, filenames in os.walk(dir):
