@@ -1,0 +1,199 @@
+<style>
+	#board {
+		border: 1px solid black;
+		display: inline-block
+	}
+
+	#board>div {
+		width: auto;
+	}
+
+	#board .block {
+		width: 2em;
+		height: 2em;
+		border: 1px solid black;
+		display: inline-block;
+		box-sizing: border-box;
+	}
+
+	#board .show {
+		background-color: gray;
+	}
+
+	#board .food {
+		border-radius: 100px;
+	}
+
+	#dir {
+		width: 100px;
+		height: 100px;
+		border: 1px solid black;
+		display: inline-block;
+		font-size: 100px;
+		line-height: 90px;
+		border-radius: 100px;
+		transform: rotate(90deg);
+	}
+
+	#count {
+		font-size: 100px;
+		text-align: center;
+	}
+
+	#board>.Message {
+		border: 2px solid black;
+		font-size: 2em;
+		color: red;
+	}
+
+	.panel {
+		display: inline-block;
+		vertical-align: top;
+	}
+</style>
+
+<div id='board' tabindex="0"></div>
+<div class='panel'>
+	<div id='dir'> &larr;</div>
+	<div id='count'> 1 </div>
+</div>
+
+<script>
+
+	const size = 20, feedDelay = 5, speed = 5
+
+	const snakes = [] // array of [number,number]
+	let food = [] // array of [number,number]
+	let dir = 'north', // north, south, east, west 
+		state = 'play' //play,pause,over
+
+	function inSnake(_x, _y) {
+		return snakes.some(([x, y]) => x == _x && y == _y)
+	}
+	function inFood(_x, _y) {
+		return food.some(([x, y]) => x == _x && y == _y)
+	}
+
+	function doFeed() {
+		if (snakes.length + food.length >= Math.pow(size, 2)) return //no room
+		const x = Math.floor(Math.random() * size),
+			y = Math.floor(Math.random() * size)
+		if (inSnake(x, y) || inFood(x, y)) {
+			doFeed() //try again
+		} else {
+			food.push([x, y])
+		}
+	}
+
+	let feedRequest = 0
+	function feed() {
+		feedRequest++
+		if (feedRequest > feedDelay) {
+			feedRequest = 0
+			doFeed()
+		}
+	}
+
+	function snakeMove() {
+		let [x, y] = snakes[snakes.length - 1]
+		switch (dir) {
+			case 'north': y--; break;
+			case 'south': y++; break;
+			case 'west': x--; break;
+			case 'east': x++; break;
+		}
+		if (inSnake(x, y)) state = 'over' //collision
+		if (x < 0 || x > size || y < 0 || y > size) state = 'over' //out  
+
+		const eaten = inFood(x, y)
+		snakes.push([x, y])
+		if (eaten) {//remove food 
+			const gonner = food.find(f => (f[0] == x && f[1] == y))
+			console.log(gonner)
+			food = food.filter(f => f != gonner)
+		} else {
+			snakes.shift()  //cut the tail  
+		}
+	}
+
+
+	const board = document.getElementById('board')
+	function render() {
+		let html = ''
+		for (let y = 0; y < size; y++) {
+			html += '<div>'
+			for (let x = 0; x < size; x++) {
+				className = 'block'
+				if (inSnake(x, y) || inFood(x, y)) className += ' show'
+				if (inFood(x, y)) className += ' food'
+				html += '<div class="' + className + '"></div>'
+			}
+			html += '</div>'
+		}
+		board.innerHTML = html
+		document.getElementById('count').innerHTML = snakes.length
+
+
+		function showMsg(msg) {
+			const panel = document.createElement('div')
+			panel.className = 'Message'
+			panel.innerHTML = msg
+			board.appendChild(panel)
+		}
+
+		if (state == 'over') {
+			showMsg('Game Over. Press space to play gain. ')
+		}
+		if (state == 'pause') {
+			showMsg('Game is Paused. Press space to resume. ')
+		}
+
+	}
+
+	function step() {
+		if (state == 'play') {
+			feed()
+			snakeMove()
+		}
+		render()
+		if (state != 'over') {
+			setTimeout(step, (10 / speed) * 100)
+		}
+	}
+
+	//keep focus
+	board.addEventListener('blur', () => {
+		setTimeout(() => board.focus(), 1)
+	})
+	board.focus()
+
+	//user input
+	board.addEventListener('keydown', evt => {
+		const { key, code } = evt
+		if (code == 'Space') {
+			switch (state) {
+				case 'over': startGame(); break;
+				case 'pause': state = 'play'; break;
+				case 'play': state = 'pause'; break;
+			}
+		}
+		if (key == 'a' || key == 'ArrowLeft') dir = 'west'
+		if (key == 'w' || key == 'ArrowUp') dir = 'north'
+		if (key == 'd' || key == 'ArrowRight') dir = 'east'
+		if (key == 's' || key == 'ArrowDown') dir = 'south'
+		const deg = 90 + 'north,east,south,west'.split(',').indexOf(dir) * 90
+		document.getElementById('dir').style.transform = `rotate(${deg}deg)`
+	})
+
+	//game start! 
+	function startGame() {
+		state = 'play'
+		food.length = snakes.length = 0
+		const center = Math.floor(size / 2)
+		snakes.push([center, center])
+		step()
+	}
+
+	startGame()
+
+</script>
